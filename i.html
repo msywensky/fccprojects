@@ -1,0 +1,122 @@
+<html>
+<head>
+<style>
+	
+body {
+	background-color:lightgreen;
+	margin:0;
+	padding:0;
+}	
+
+.group1 {
+	height:150px;
+	vertical-align:center;
+}
+	
+.button {
+  border: 2px solid black;
+	background-color:blue;
+  color:white;
+  cursor:pointer;
+  text-align:center;
+  padding:5px 10px 5px 10px;
+}
+
+.tickButton {
+	font-size:1.5em;
+	font-weight: bolder;
+	padding:1px 5px 1px 5px;
+	cursor:pointer;
+	text-align:center;
+	border: 2px solid white;
+	border-radius:5px;
+}
+
+.setting {
+	font-size:1.5em;
+	font-weight:bolder;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.settingBox {
+	text-align:center;
+	width:200px;
+	padding:20px;
+	vertical-align: middle;
+}
+
+.settingText {
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+#BreakTime {
+	height:100px;
+	float:left;
+}
+
+#PTimeSetting {
+	height:100px;
+	position:absolute;
+	top:0px;
+	right:0px;
+}
+
+#PTime {
+	height:100px;
+	width:200px;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+	padding-top:20px;
+	font-size:2.5em;
+}
+
+#TimeType {
+	width:100%;
+	text-align:center;
+	font-size:smaller;
+}
+
+.buttonGroup {
+	width:100%;
+	text-align:center;
+	font-size:2.0em;
+}
+
+</style>	
+</head>	
+<body>
+
+<div class="group1">
+	<div id="BreakTime" class="settingBox">
+		<div class="settingText">Break Minutes</div>
+		<span id="BreakTimeSettingIncrease" class="tickButton">+</span>
+		<span id="BreakTimeNumber" class="setting">...Loading</span>
+		<span id="BreakTimeSettingDecrease" class="tickButton">-</span>
+	</div>
+
+	<div id="PTime" class="settingBox">
+		<div id="PTimeNum">...Loading</div>
+		<div id="TimeType">Get to work!!!</div>
+	</div>
+
+
+	<div id="PTimeSetting" class="settingBox">
+		<div class="settingText">Working Minutes</div>
+		<span id="PTimeSettingIncrease" class="tickButton">+</span>
+		<span id="PTimeSettingNumber" class="setting">...Loading</span>	
+		<span id="PTimeSettingDecrease" class="tickButton">-</span>
+	</div>
+</div>
+<div class="buttonGroup">
+<span id="StartStopButton" class="button">START</span>
+<span style="width:20px">&nbsp;</span>
+<span id="ResetButton" class="button">RESET</span>
+</div>
+
+<script type="text/javascript" src="clock.js"></script>
+</body>
+</html>
+	

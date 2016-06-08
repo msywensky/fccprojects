@@ -1,0 +1,143 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+		<link href='https://fonts.googleapis.com/css?family=Special+Elite' rel='stylesheet' type='text/css'>		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			body {
+				font-family: 'Special Elite', cursive;
+			}
+			
+			.lastmove {
+				font-weight: bolder;
+			}
+			
+			.maincontainer {
+				background-image: url('http://content.etilize.com/images/900/1010065859.jpg');
+				background-size: 100% auto;
+				width:600px;
+				height:560px;
+				position:relative;
+				text-align:center;
+				padding-top:60px;
+			}
+			
+			.container {
+				width:100%;
+				height:480px;
+				position:relative;
+				text-align:left;
+				overflow: hidden;
+			}
+			
+			#intro {
+				position:absolute;
+				left:110px;
+				bottom:-30px;
+			}
+			
+			#choose {
+				padding-top:20px;
+				padding-bottom:50px;
+			}
+			
+			#board {
+				position:absolute;
+				left:110px;
+				bottom:-300px;
+			}
+			
+			input {
+				border-top:none;
+				border-left:none;
+				border-right:none;
+				width:20px;
+				padding-left:3px;
+				border-bottom: 2px solid black;
+				height:30px;
+				font-family: 'Special Elite', cursive;
+				font-size:larger;
+			}
+			input:focus {
+				outline:0 !important;
+			}
+
+			.firstPipe { padding-left:53px; }
+			.firstPipeIndent { padding-left:39px; }
+			
+			.secondPipe { padding-left:50px; }
+			.secondPipeIndent { padding-left:36px; }
+
+			.square { position:relative; }
+			.scol0 { left:25px; }
+			.scol1 { left:20px; }
+			.scol2 { left:20px; }
+
+		</style>
+			
+	</head>
+	
+	<body>
+	
+	<div class="maincontainer">
+	<div class="container">
+		<div id="board">
+			<div id="choose">
+				Welcome to old school tic-tac-toe.<br />X or O (X/O)?
+				<input type="text" id="txtPiece" />
+			</div>
+
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+
+			<span class="square srow0 scol0" id="square0-0">1</span>
+			<span class="firstPipeIndent">|</span>
+			<span class="square srow0 scol1" id="square0-1">2</span>
+			<span class="secondPipeIndent">|</span>
+			<span class="square srow0 scol2" id="square0-2">3</span><br />
+
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+			-----+-----+-----<br />
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+
+			<span class="square srow1 scol0" id="square1-0">4</span>
+			<span class="firstPipeIndent">|</span>
+			<span class="square srow1 scol1" id="square1-1">5</span>
+			<span class="secondPipeIndent">|</span>
+			<span class="square srow1 scol2" id="square1-2">6</span><br />
+
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+			-----+-----+-----<br />
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+
+			<span class="square srow2 scol0" id="square2-0">7</span>
+			<span class="firstPipeIndent">|</span>
+			<span class="square srow2 scol1" id="square2-1">8</span>
+			<span class="secondPipeIndent">|</span>
+			<span class="square srow2 scol2" id="square2-2">9</span><br />
+
+			<span class="firstPipe">|</span>
+			<span class="secondPipe">|</span><br />
+			<div id="movelog">
+				Your Move (1-9)?
+				<input type="text" id="txtMove" />
+			</div>
+			<div id="divMessage"></div>
+		</div>
+	</div>
+	</div>
+	<script type="text/javascript" src="tic.js"></script>	
+	</body>
+	
+	
+</html>

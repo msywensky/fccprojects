@@ -1,0 +1,64 @@
+<html>
+	
+<head>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Josefin+Sans&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+<style>
+	body {
+		background-color:lightblue;
+		font-family: "Josefin Sans";
+		font-style: normal;
+		font-weight: 400;	
+		font-size:20pt;
+	}
+	
+	h1 {
+		text-align:center;
+	}
+	
+	.rainy {
+		background-image: url(http://www.bearcastmedia.com/wp-content/uploads/2016/04/rainyday.jpeg);
+	}
+
+	.sunny {
+		background-image: url(http://img01.deviantart.net/4daf/i/2010/241/2/2/oka_river__sunny_day_by_marphey-d2xing8.jpg);
+	}
+
+	.cloudy {
+		background-image: url(http://www.publicdomainpictures.net/pictures/40000/velka/cloudy-sky-2.jpg);
+	}
+	
+	.clear {
+		background-image: url(http://www.publicdomainpictures.net/pictures/10000/velka/1-1214836242AGCu.jpg);
+	}
+	
+	#weatherIcon {
+		width:100px;
+		border:none;
+	}
+	
+	#temp {
+		font-size: 1.5em;
+		cursor:pointer;
+	}
+	
+	.group {
+		width:100%;
+		text-align:center;
+	}
+</style>
+		
+</head>	
+<body >
+	<h1>Current Weather</h1>
+	<div class="group">
+		<img id="weatherIcon" />
+		<div id="temp"></div>
+		<div id="weather"></div>
+		<div id="city"></div>
+	</div>
+	<script src="weather.js"></script>			
+</body>	
+</html>
+	

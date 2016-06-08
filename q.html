@@ -1,0 +1,65 @@
+<html>
+<head>	
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Josefin+Sans&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+<style>
+	body {
+		background-image: url(http://www.entheosweb.com/images/design/bg/bg_12.gif);
+		font-family: "Josefin Sans";
+		font-style: normal;
+		font-weight: 400;	
+	}
+	h1 { 
+		text-align:center;
+		}
+	#divQuote {
+		text-align:center;
+		font-weight:bolder;
+		margin-left:20px;
+		margin-right:20px;
+	}
+	
+	#divAuthor {
+		text-align:center;
+		font-style:italic;
+		padding-top:10px;
+	}
+	
+	#divButtons {
+		text-align:center;
+		padding-top:10px;
+		vertical-align: middle;
+	}
+	
+	#btnQuote {
+		background-color:lightgreen;
+		height:50px;
+		width:100px;
+		border: 2px dashed darkgreen;
+	}
+	
+	#linkTwitter img {
+		width:50px;
+	}
+	
+</style>
+</head>	
+
+<body>
+	<h1>My Quote Generator</h1>
+	
+	<div id="divQuote"></div>
+	<div id="divAuthor"></div>
+	<div id="divButtons">
+		<button id="btnQuote">Get Quote</button><br/>
+		<a id="linkTwitter" target="_blank" href="#">
+		<img src="http://icons.iconarchive.com/icons/graphics-vibe/simple-rounded-social/128/twitter-icon.png"></img>
+		</a>
+
+	</div>
+<script src="quotes.js"></script>			
+</body>	
+	
+</html>
+
+	

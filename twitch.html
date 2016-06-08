@@ -1,0 +1,74 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Josefin+Sans&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<style>
+			body {
+				background-color:lightblue;
+				font-family: "Josefin Sans";
+				font-style: normal;
+				font-weight: 400;	
+				font-size:10pt;
+				margin-left:15%;
+				margin-right:15%;
+			}
+			
+			h1 {
+				text-align:center;
+			}
+			
+			.result {
+				margin-top:15px;
+				background-color: white;
+				padding: 10px 10px 10px 10px;
+				border: 1px solid black;
+				border-radius: 20px;
+			}
+			
+			.title {
+				font-weight:bolder;
+				font-size:larger;
+			}
+			.snippet {
+				font-weight:lighter;
+				font-size:smaller;
+			}
+			
+			a  { 
+				text-decoration:none;
+				color:black;
+			}
+			
+			.mybutton {
+				cursor: pointer;
+			}
+			
+			#txtSearch {
+				border-radius: 10px;
+				border-color:gray;
+				font-size:larger;
+				padding-left:5px;
+			}
+			
+			#txtSearch:focus {
+				outline:0 !important;
+			}
+				
+		</style>		
+		
+	</head>
+	
+	<body>
+		<h1>Twitch</h1>
+		<button id="btnTest">Do it</button><br />
+		<input type="text" id="txtData" value="freecodecamp" />
+		<button id="btnGetDetail">detail</button>
+
+
+		<div id="divResults"></div>
+		<script src="twitch.js"></script>
+
+	</body>
+
+</html>
