@@ -1,19 +1,22 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
-		<link href='http://fonts.googleapis.com/css?family=Josefin+Sans&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<script src="https://rawgit.com/jonnyreeves/jquery-Mustache/master/jquery.mustache.js"></script>
+		<script src="https://rawgit.com/janl/mustache.js/master/mustache.js"></script>		
+
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">
+		<script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<xscript src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<style>
 			body {
 				background-color:lightblue;
-				font-family: "Josefin Sans";
-				font-style: normal;
-				font-weight: 400;	
-				font-size:10pt;
-				margin-left:15%;
-				margin-right:15%;
 			}
-			
+
 			h1 {
 				text-align:center;
 			}
@@ -30,45 +33,86 @@
 				font-weight:bolder;
 				font-size:larger;
 			}
-			.snippet {
-				font-weight:lighter;
-				font-size:smaller;
-			}
-			
-			a  { 
-				text-decoration:none;
-				color:black;
+		
+			.container {
+				text-align:center;
 			}
 			
 			.mybutton {
 				cursor: pointer;
 			}
-			
-			#txtSearch {
-				border-radius: 10px;
-				border-color:gray;
-				font-size:larger;
-				padding-left:5px;
+
+
+			#divResults {
+				text-align:center;
+				width:100%;
 			}
-			
-			#txtSearch:focus {
-				outline:0 !important;
+
+
+			li {
+				background-color:lightgray;
 			}
-				
+			.online {
+				background-color:white;
+				cursor:pointer;
+			}
+
+			li.border {
+				border-top: 1px solid black;
+				border-left: 1px solid black;
+				border-right: 1px solid black;
+			}
+
+			ul li:first-child {
+				border-top-left-radius: 20px;
+				border-top-right-radius: 20px;
+			}				
+
+			ul li:last-child {
+				border-bottom: 1px solid black;
+				border-bottom-left-radius: 20px;
+				border-bottom-right-radius: 20px;
+			}	
+
+			.iconimg {
+				width:40px;
+			}			
 		</style>		
 		
 	</head>
 	
 	<body>
-		<h1>Twitch</h1>
-		<button id="btnTest">Do it</button><br />
-		<input type="text" id="txtData" value="freecodecamp" />
-		<button id="btnGetDetail">detail</button>
+		<div class="container">
+			<h1>Twitch Streams</h1>
+			<div id="divResults"></div>
+		</div>
 
+		<script id="channel-template" type="text/html">
+		<div style="text-align:center;width:100%;">
+		<ul class="mdl-list" style="text-align:left;">
+		{{#data}}
+		<li class="mdl-list__item mdl-list__item--two-line border {{#isOnline}}online{{/isOnline}}"
+			{{#isOnline}} onclick="gotoStream('{{streamUrl}}')"{{/isOnline}} >
+			<span class="mdl-list__item-primary-content">
+			{{#icon}}<img class="iconimg mdl-list__item-avatar" src="{{icon}}"></img>{{/icon}}
+			{{^icon}}<i class="material-icons mdl-list__item-avatar">person</i>{{/icon}}
+			<span>{{name}}</span>
+			<span class="mdl-list__item-sub-title">
+				{{streamName}}
+			</span>
+			</span>
+			{{#isOnline}}
+			<span class="mdl-list__item-secondary-content">
+				<span>Viewers: {{viewers}}</span>
+			</span>
+			{{/isOnline}}
+		</li>
+		{{/data}}
+		</ul>
+		</div>
+		</script>
 
-		<div id="divResults"></div>
 		<script src="twitch.js"></script>
-
 	</body>
 
 </html>
