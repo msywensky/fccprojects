@@ -1,6 +1,3 @@
-
-
-
 class User {
 
 	get name() {
