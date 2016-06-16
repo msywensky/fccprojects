@@ -23,13 +23,21 @@ class ColorButton {
 		//this.element.css({ fill:this.onColor});
 		this.sound.play();
 	}
+
+	turnLightOn() {
+		this.element.addClass("on");
+	}
+
+	turnLightOff() {
+		this.element.removeClass("on");
+	}
 	
 	turnOnInvalid() {
-		//this.element.css("fill",this.onColor);
 		this.element.addClass("on");
-		if ( (!wrongSound.paused) || (wrongSound.currentTime > 0) ){
+		console.log("Playing invalid sound");
+	/*	if ( (!wrongSound.paused) || (wrongSound.currentTime > 0) ){
 			return;
-		}
+		} */
 		wrongSound.addEventListener("ended",() => this.turnOffInvalid());
 		wrongSound.play();
 		
@@ -40,12 +48,10 @@ class ColorButton {
 		this.element.removeClass("on");
 		this.sound.pause();
 		this.sound.currentTime = 0;
-		this.element.css("fill", this.offColor);
 	}
 	
 	turnOffInvalid() {
 		this.element.removeClass("on");
-		//this.element.css("fill", this.offColor);
 		wrongSound.removeEventListener("ended", () => this.turnOffInvalid());
 	}
 	
@@ -58,8 +64,8 @@ enum GameStateEnum {
     ENTERING_SEQUENCE,
 	ADD_TO_SEQUENCE,
 	AWAITING_RESTART,
-	AWAITING_PLAYING_SEQUENCE
-	
+	AWAITING_PLAYING_SEQUENCE,
+	WON
 }
 
 class Simon {
@@ -71,6 +77,7 @@ class Simon {
 	EnteredSeqCorrect : number;
 	StrictEnabled : boolean;
 	ActiveTimeout: number;
+	WinningSeqCount: number;
 	
 	AvailableColors: Array<ColorButton>;
 	
@@ -80,6 +87,7 @@ class Simon {
 		this.EnteredSeqCorrect = 0;
 		this.StrictEnabled = false;
 		this.AvailableColors = [];
+		this.WinningSeqCount = 20; //Lower for testing
 		console.log("constructor being called.  GameState:" + this.GameState);
 	}
 
@@ -112,24 +120,30 @@ class Simon {
 		}
 	}
 	
-	toggleStrict() {
+	toggleStrict(btn:JQuery) {
+		if (this.GameState === GameStateEnum.OFF) {
+			return;
+		}
+
 		console.log("togglestrict called");
 		clearTimeout(this.ActiveTimeout);
 		if (this.StrictEnabled) {
-			this.turnOffStrictButton();
+			this.turnOffStrictButton(btn);
 		} else {
-			this.turnOnStrictButton();
+			this.turnOnStrictButton(btn);
 		}
 	}
 	
-	turnOffStrictButton() {
+	turnOffStrictButton(btn:JQuery) {
 		console.log("Turning off strict");
 		this.StrictEnabled = false;
+		btn.removeClass("on");
 	}
 	
-	turnOnStrictButton() {
+	turnOnStrictButton(btn:JQuery) {
 		console.log("Turning on strict");
 		this.StrictEnabled = true;
+		btn.addClass("on");
 	}
 	
 	copySequence() {
@@ -137,6 +151,9 @@ class Simon {
 	}
 	
 	showSequence() {
+		if (this.isOff()) {
+			return;
+		}
 		console.log("Showing sequence");
 		this.GameState = GameStateEnum.PLAYING_SEQUENCE;
 		this.EnteredSeqCorrect = 0;
@@ -158,8 +175,7 @@ class Simon {
 	}
 	
 	showNextColorPause() {
-		this.tSequence[0].turnOff();
-		console.log("showNextColor: turning off " + this.tSequence[0].offColor);
+		this.turnAllButtonsOff();
 		this.tSequence.shift();
 		console.log("ts len:" + this.tSequence.length);
 		if ( (this.tSequence.length > 0) && (this.GameState == GameStateEnum.PLAYING_SEQUENCE) ) {
@@ -179,17 +195,49 @@ class Simon {
 	}
 	
 	addMoveToSequence() {
+		this.turnAllButtonsOff();
+		if (this.Sequence.length == this.WinningSeqCount) {
+			this.showWon();
+			return;
+		}
 		this.ActiveTimeout = setTimeout( ()=>{
-		let num = Math.floor(Math.random() * 4);
-		this.Sequence.push(this.AvailableColors[num]);
-		console.log("adding color " + this.AvailableColors[num].onColor + " to sequence");
-		this.updateMoveCount(this.Sequence.length.toString());
-		this.showSequence();
-		},500);
+			let num = Math.floor(Math.random() * 4);
+			this.Sequence.push(this.AvailableColors[num]);
+			console.log("adding color " + this.AvailableColors[num].onColor + " to sequence");
+			this.updateMoveCount(this.Sequence.length.toString());
+			this.showSequence();
+		},750);
+	}
+
+	showWon() {
+		this.GameState == GameStateEnum.WON;
+		$("#txtMoves").text(":-)");
+		this.AvailableColors.forEach((item)=>item.turnLightOn());
+		this.ActiveTimeout = setTimeout( ()=> {
+			this.AvailableColors.forEach((item)=>item.turnLightOff());
+			this.ActiveTimeout = setTimeout( ()=>{
+				this.AvailableColors.forEach((item)=>item.turnLightOn());
+				this.ActiveTimeout = setTimeout( ()=>{
+					this.AvailableColors.forEach((item)=>item.turnLightOff());
+					this.ActiveTimeout = setTimeout( ()=>{
+						this.AvailableColors.forEach((item)=>item.turnLightOn());
+						this.ActiveTimeout = setTimeout( ()=>{
+							this.AvailableColors.forEach((item)=>item.turnLightOff());
+							this.newGame();
+						},700);
+					},700);
+				},700);
+			},700);
+		},700);
+
 	}
 
 	isOff() {
 		return this.GameState == GameStateEnum.OFF;
+	}
+
+	won() {
+		return this.GameState == GameStateEnum.WON;
 	}
 	
 	correctSeqEntered(color:ColorButton) {
@@ -205,6 +253,7 @@ class Simon {
 	}
 	
 	newGame() {
+		this.GameState = GameStateEnum.ON;
 		this.Sequence = [];
 		this.updateMoveCount("00");
 		this.addMoveToSequence();
@@ -213,7 +262,7 @@ class Simon {
 	
 	colorButtonDown(button:ColorButton) {
 		clearTimeout(this.ActiveTimeout);
-		if (this.isOff()) {
+		if (this.isOff() || this.won()) {
 			return;
 		}
 
@@ -237,20 +286,16 @@ class Simon {
 		}
 	}
 	
+	turnAllButtonsOff() {
+		this.AvailableColors.forEach((item)=>item.turnOff());
+	}
 	
 	colorButtonUp(button:ColorButton) {
 		if (this.isOff()) {
 			return;
 		}
 
-		button.turnOff();
-		/*
-		if (this.GameState == GameStateEnum.AWAITING_PLAYING_SEQUENCE) {
-			this.showSequence();
-		} else if (this.GameState == GameStateEnum.AWAITING_RESTART) {
-			this.newGame();
-		} else 
-		*/
+		this.turnAllButtonsOff();
 		if ( (this.GameState == GameStateEnum.ENTERING_SEQUENCE) 
 			&& (this.EnteredSeqCorrect >= this.Sequence.length) ) {
 				
@@ -277,16 +322,17 @@ $(document).ready( function() {
 		svgSupport = true;
 		showSVG();
 	} else {
-		console.log("SVG Not supported!");
+		console.log("SVG is not supported!");
 		showNonSVG();
 	}
 
 	$("#btnStart").click(()=>simon.startButtonPressed());
 	//$("#btnStrict").click(()=>simon.toggleStrict());
-	$("#btnStrict").click(alert("Hello"));
 	
 	$("#btnPower").click(()=>simon.togglePower($("#btnPower"),$("#txtPower")));
 	$("#txtPower").click(()=>simon.togglePower($("#btnPower"),$("#txtPower")));
+	$("#btnStrict").click(()=>simon.toggleStrict($("#btnStrict")));
+	$("*").mouseup(()=>simon.turnAllButtonsOff());
 
 });
 

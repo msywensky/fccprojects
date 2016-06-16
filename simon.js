@@ -14,13 +14,19 @@ var ColorButton = (function () {
         //this.element.css({ fill:this.onColor});
         this.sound.play();
     };
+    ColorButton.prototype.turnLightOn = function () {
+        this.element.addClass("on");
+    };
+    ColorButton.prototype.turnLightOff = function () {
+        this.element.removeClass("on");
+    };
     ColorButton.prototype.turnOnInvalid = function () {
         var _this = this;
-        //this.element.css("fill",this.onColor);
         this.element.addClass("on");
-        if ((!wrongSound.paused) || (wrongSound.currentTime > 0)) {
-            return;
-        }
+        console.log("Playing invalid sound");
+        /*	if ( (!wrongSound.paused) || (wrongSound.currentTime > 0) ){
+                return;
+            } */
         wrongSound.addEventListener("ended", function () { return _this.turnOffInvalid(); });
         wrongSound.play();
     };
@@ -29,12 +35,10 @@ var ColorButton = (function () {
         this.element.removeClass("on");
         this.sound.pause();
         this.sound.currentTime = 0;
-        this.element.css("fill", this.offColor);
     };
     ColorButton.prototype.turnOffInvalid = function () {
         var _this = this;
         this.element.removeClass("on");
-        //this.element.css("fill", this.offColor);
         wrongSound.removeEventListener("ended", function () { return _this.turnOffInvalid(); });
     };
     return ColorButton;
@@ -48,6 +52,7 @@ var GameStateEnum;
     GameStateEnum[GameStateEnum["ADD_TO_SEQUENCE"] = 4] = "ADD_TO_SEQUENCE";
     GameStateEnum[GameStateEnum["AWAITING_RESTART"] = 5] = "AWAITING_RESTART";
     GameStateEnum[GameStateEnum["AWAITING_PLAYING_SEQUENCE"] = 6] = "AWAITING_PLAYING_SEQUENCE";
+    GameStateEnum[GameStateEnum["WON"] = 7] = "WON";
 })(GameStateEnum || (GameStateEnum = {}));
 var Simon = (function () {
     function Simon() {
@@ -56,7 +61,7 @@ var Simon = (function () {
         this.EnteredSeqCorrect = 0;
         this.StrictEnabled = false;
         this.AvailableColors = [];
-        this.drawGame();
+        this.WinningSeqCount = 20; //Lower for testing
         console.log("constructor being called.  GameState:" + this.GameState);
     }
     Simon.prototype.addColor = function (color) {
@@ -68,46 +73,55 @@ var Simon = (function () {
         //color.element.mousedown(  ()=>self.colorButtonDown(color) );
         //color.element.mouseup(  ()=>self.colorButtonUp(color) );
     };
-    Simon.prototype.drawGame = function () {
-    };
-    Simon.prototype.togglePower = function (el) {
+    Simon.prototype.togglePower = function (btn, txt) {
         console.log("toggle power clicked");
-        //let el = $(e.target);
         console.log("game state = " + this.GameState);
         if (this.GameState === GameStateEnum.OFF) {
             this.GameState = GameStateEnum.ON;
-            el.addClass("on");
-            el.text("On");
+            btn.addClass("on");
+            txt.text("On");
             console.log("turning on");
             this.updateMoveCount("- -");
         }
         else {
-            el.removeClass("on");
+            btn.removeClass("on");
             this.Sequence = [];
             this.GameState = GameStateEnum.OFF;
             console.log("turning off");
-            el.text("Off");
+            txt.text("Off");
             this.updateMoveCount("");
         }
     };
-    Simon.prototype.toggleStrict = function () {
+    Simon.prototype.toggleStrict = function (btn) {
+        if (this.GameState === GameStateEnum.OFF) {
+            return;
+        }
+        console.log("togglestrict called");
+        clearTimeout(this.ActiveTimeout);
         if (this.StrictEnabled) {
-            this.turnOffStrictButton();
+            this.turnOffStrictButton(btn);
         }
         else {
-            this.turnOnStrictButton();
+            this.turnOnStrictButton(btn);
         }
     };
-    Simon.prototype.turnOffStrictButton = function () {
+    Simon.prototype.turnOffStrictButton = function (btn) {
+        console.log("Turning off strict");
         this.StrictEnabled = false;
+        btn.removeClass("on");
     };
-    Simon.prototype.turnOnStrictButton = function () {
+    Simon.prototype.turnOnStrictButton = function (btn) {
+        console.log("Turning on strict");
         this.StrictEnabled = true;
+        btn.addClass("on");
     };
     Simon.prototype.copySequence = function () {
         this.tSequence = this.Sequence.slice(0);
     };
     Simon.prototype.showSequence = function () {
+        if (this.isOff()) {
+            return;
+        }
         console.log("Showing sequence");
         this.GameState = GameStateEnum.PLAYING_SEQUENCE;
         this.EnteredSeqCorrect = 0;
@@ -124,16 +138,15 @@ var Simon = (function () {
         var _this = this;
         this.tSequence[0].turnOn();
         console.log("turning on first color: " + this.tSequence[0].onColor);
-        setTimeout(function () { return _this.showNextColorPause(); }, 2000);
+        this.ActiveTimeout = setTimeout(function () { return _this.showNextColorPause(); }, 2000);
     };
     Simon.prototype.showNextColorPause = function () {
         var _this = this;
-        this.tSequence[0].turnOff();
-        console.log("showNextColor: turning off " + this.tSequence[0].offColor);
+        this.turnAllButtonsOff();
         this.tSequence.shift();
         console.log("ts len:" + this.tSequence.length);
         if ((this.tSequence.length > 0) && (this.GameState == GameStateEnum.PLAYING_SEQUENCE)) {
-            setTimeout(function () { return _this.showNextColor(); }, 500);
+            this.ActiveTimeout = setTimeout(function () { return _this.showNextColor(); }, 500);
         }
     };
     Simon.prototype.showNextColor = function () {
@@ -141,7 +154,7 @@ var Simon = (function () {
         if ((this.tSequence.length > 0) && (this.GameState == GameStateEnum.PLAYING_SEQUENCE)) {
             this.tSequence[0].turnOn();
             console.log("turning on next color:" + this.tSequence[0].onColor);
-            setTimeout(function () { return _this.showNextColorPause(); }, 2000);
+            this.ActiveTimeout = setTimeout(function () { return _this.showNextColorPause(); }, 2000);
         }
         else if (this.GameState == GameStateEnum.PLAYING_SEQUENCE) {
             console.log("showNextColor: Your turn");
@@ -150,27 +163,59 @@ var Simon = (function () {
     };
     Simon.prototype.addMoveToSequence = function () {
         var _this = this;
-        setTimeout(function () {
+        this.turnAllButtonsOff();
+        if (this.Sequence.length == this.WinningSeqCount) {
+            this.showWon();
+            return;
+        }
+        this.ActiveTimeout = setTimeout(function () {
             var num = Math.floor(Math.random() * 4);
             _this.Sequence.push(_this.AvailableColors[num]);
             console.log("adding color " + _this.AvailableColors[num].onColor + " to sequence");
             _this.updateMoveCount(_this.Sequence.length.toString());
             _this.showSequence();
-        }, 500);
+        }, 750);
+    };
+    Simon.prototype.showWon = function () {
+        var _this = this;
+        this.GameState == GameStateEnum.WON;
+        $("#txtMoves").text(":-)");
+        this.AvailableColors.forEach(function (item) { return item.turnLightOn(); });
+        this.ActiveTimeout = setTimeout(function () {
+            _this.AvailableColors.forEach(function (item) { return item.turnLightOff(); });
+            _this.ActiveTimeout = setTimeout(function () {
+                _this.AvailableColors.forEach(function (item) { return item.turnLightOn(); });
+                _this.ActiveTimeout = setTimeout(function () {
+                    _this.AvailableColors.forEach(function (item) { return item.turnLightOff(); });
+                    _this.ActiveTimeout = setTimeout(function () {
+                        _this.AvailableColors.forEach(function (item) { return item.turnLightOn(); });
+                        _this.ActiveTimeout = setTimeout(function () {
+                            _this.AvailableColors.forEach(function (item) { return item.turnLightOff(); });
+                            _this.newGame();
+                        }, 700);
+                    }, 700);
+                }, 700);
+            }, 700);
+        }, 700);
     };
     Simon.prototype.isOff = function () {
         return this.GameState == GameStateEnum.OFF;
+    };
+    Simon.prototype.won = function () {
+        return this.GameState == GameStateEnum.WON;
     };
     Simon.prototype.correctSeqEntered = function (color) {
         return this.Sequence[this.EnteredSeqCorrect].onColor === color.onColor;
     };
     Simon.prototype.startButtonPressed = function () {
+        clearTimeout(this.ActiveTimeout);
         if (this.isOff()) {
             return;
         }
         this.newGame();
     };
     Simon.prototype.newGame = function () {
+        this.GameState = GameStateEnum.ON;
         this.Sequence = [];
         this.updateMoveCount("00");
         this.addMoveToSequence();
@@ -178,7 +223,8 @@ var Simon = (function () {
     };
     Simon.prototype.colorButtonDown = function (button) {
         var _this = this;
-        if (this.isOff()) {
+        clearTimeout(this.ActiveTimeout);
+        if (this.isOff() || this.won()) {
             return;
         }
         if (this.GameState != GameStateEnum.ENTERING_SEQUENCE) {
@@ -193,26 +239,22 @@ var Simon = (function () {
             button.turnOnInvalid();
             if (this.StrictEnabled) {
                 this.GameState = GameStateEnum.AWAITING_RESTART;
-                setTimeout(function () { return _this.newGame(); }, 3000);
+                this.ActiveTimeout = setTimeout(function () { return _this.newGame(); }, 3000);
             }
             else {
                 this.GameState = GameStateEnum.AWAITING_PLAYING_SEQUENCE;
-                setTimeout(function () { return _this.showSequence(); }, 3000);
+                this.ActiveTimeout = setTimeout(function () { return _this.showSequence(); }, 3000);
             }
         }
+    };
+    Simon.prototype.turnAllButtonsOff = function () {
+        this.AvailableColors.forEach(function (item) { return item.turnOff(); });
     };
     Simon.prototype.colorButtonUp = function (button) {
         if (this.isOff()) {
             return;
         }
-        button.turnOff();
-        /*
-        if (this.GameState == GameStateEnum.AWAITING_PLAYING_SEQUENCE) {
-            this.showSequence();
-        } else if (this.GameState == GameStateEnum.AWAITING_RESTART) {
-            this.newGame();
-        } else
-        */
+        this.turnAllButtonsOff();
         if ((this.GameState == GameStateEnum.ENTERING_SEQUENCE)
             && (this.EnteredSeqCorrect >= this.Sequence.length)) {
             this.addMoveToSequence();
@@ -237,12 +279,15 @@ $(document).ready(function () {
         showSVG();
     }
     else {
-        console.log("SVG Not supported!");
+        console.log("SVG is not supported!");
         showNonSVG();
     }
-    $("#btnPower").click(function () { return simon.togglePower($("#btnPower")); });
-    $("#txtPower").click(function () { return simon.togglePower($("#btnPower")); });
     $("#btnStart").click(function () { return simon.startButtonPressed(); });
+    //$("#btnStrict").click(()=>simon.toggleStrict());
+    $("#btnPower").click(function () { return simon.togglePower($("#btnPower"), $("#txtPower")); });
+    $("#txtPower").click(function () { return simon.togglePower($("#btnPower"), $("#txtPower")); });
+    $("#btnStrict").click(function () { return simon.toggleStrict($("#btnStrict")); });
+    $("*").mouseup(function () { return simon.turnAllButtonsOff(); });
 });
 function showNonSVG() {
     $("divSVGWrapper").hide();

@@ -4,7 +4,6 @@
 <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Josefin+Sans&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Squada+One' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Expletus+Sans' rel='stylesheet' type='text/css'>
 <style>
 
@@ -32,6 +31,10 @@
 	#btnPower.on {
 		fill: green;
 	}
+
+	#btnStrict.on {
+		fill: green;
+	}
 	
 	#btnStart {
 		width:50px;
@@ -39,6 +42,10 @@
 		padding:10px;
 	}
 	
+	.btn {
+		cursor:pointer;
+	}
+
 	#redButtonSVG.off {fill:red;}
 	#redButtonSVG.on {	fill:pink !important;}
 	
@@ -52,7 +59,6 @@
 	#blueButtonSVG.on {fill:lightblue !important;}
 
 	#txtMoves {
-		xfont-family: 'Orbitron', sans-serif;
 		font-family: 'Expletus Sans', cursive;
 		stroke:red;
 		font-size: 30px;
@@ -63,61 +69,34 @@
 </style>
 
 <body>
-<!--	
-<div id="divSVGWrapper">
-	<svg width="100" height="100">
-	<circle id="yellowButtonSVG" cx="50" cy="50" r="40" stroke="grey" stroke-width="4" fill="yellow" />
-	</svg>	
+<div style="text-align:center"><br />
 
-	<svg width="100" height="100">
-	<circle id="redButtonSVG" cx="50" cy="50" r="40" stroke="grey" stroke-width="4" fill="red" />
-	</svg>	
-
-	<svg width="100" height="100">
-	<circle id="greenButtonSVG" cx="50" cy="50" r="40" stroke="grey" stroke-width="4" fill="green" />
-	</svg>	
-
-	<svg width="100" height="100">
-	<circle id="blueButtonSVG" cx="50" cy="50" r="40" stroke="grey" stroke-width="4" fill="blue" />
-	</svg>	
-	<br />
-	<button id="btnOnOff" class="off">Off</button>
-	<button id="btnStart">Start</button>
-</div>
--->
-<!--
-<br />
-<img style="width:500px" src="http://www.marinobambinos.com/wp-content/uploads/2015/03/simon-game.jpg" />
--->
-<br />
-<div style="text-align:center">
 <svg width="500" height="500" xmlns:xlink="http://www.w3.org/1999/xlink">
-<!-- Pies examples by Josef 2011-Feb-23-->
 <defs>
 	<g id="quarter_pies">
-	<path id="redButtonSVG" class="off" 
+	<path id="redButtonSVG" class="off btn" 
 		d="M0,0 L0,-200  A200,200 0 0,1  200,000  z" 
-		style="cursor:pointer;fill-opacity: 1;stroke:black;stroke-width: 20"/>
+		style="fill-opacity: 1;stroke:black;stroke-width: 20"/>
 
-	<path id="greenButtonSVG" class="off"
+	<path id="greenButtonSVG" class="off btn"
 		d="M0,0 L-200,0  A200,200 0 0,1    0,-200 z" 
-		style="cursor:pointer;fill-opacity: 1;stroke:black;stroke-width: 20"/>
+		style="fill-opacity: 1;stroke:black;stroke-width: 20"/>
 
-	<path id="yellowButtonSVG" class="off"
+	<path id="yellowButtonSVG" class="off btn"
 		d="M0,0 L0,200   A200,200 0 0,1 -200,0    z" 
-		style="cursor:pointer;fill-opacity: 1;stroke:black;stroke-width: 20"/>
+		style="fill-opacity: 1;stroke:black;stroke-width: 20"/>
 
-	<path id="blueButtonSVG" class="off"
+	<path id="blueButtonSVG" class="off btn"
 		d="M0,0 L200,0   A200,200 0 0,1    0,200  z" 
-		style="cursor:pointer;fill-opacity: 1;stroke:black;stroke-width: 20"/>
+		style="fill-opacity: 1;stroke:black;stroke-width: 20"/>
 
-	<circle cx="0" cy="0" r="105" stroke="black" stroke-width="15" fill="silver" />
+	<circle id="middleCircle" cx="0" cy="0" r="105" stroke="black" stroke-width="15" fill="silver" />
 
 	<text class="simonText" x="-60" y="-30">simon</text>
 	
 	<text class="smallText" x="-65" y="5">Start</text>
-	<circle id="btnStart" cx="-50" cy="20" r="10" stroke="grey" 
-		style="cursor:pointer;"	stroke-width="3" fill="red" />
+	<circle id="btnStart" class="btn" cx="-50" cy="20" r="10" stroke="black" 
+			stroke-width="3" fill="red" />
 
 	<rect x="-25" y="-5" rx="5" ry="5" width="55" height="35"
 	style="fill:black;stroke-width:1;" />
@@ -125,11 +104,11 @@
 	<text id="txtMoves" x="-19" y="24"></text>
 
 	<text class="smallText" x="35" y="5">Strict</text>
-	<circle id="btnStrict" cx="50" cy="20" r="10" stroke="grey" 
-		style="cursor:pointer;"	stroke-width="3" fill="yellow" />
-
-	<rect id="btnPower" x="-20" y="55" rx="5" ry="5" width="40" height="25"
-	style="cursor:pointer;stroke:black;stroke-width:3;" />
+	<circle id="btnStrict" class="btn" cx="50" cy="20" r="10" stroke="black" 
+		stroke-width="3" fill="grey" />
+	<rect id="btnPower" class="btn" x="-20" y="55" rx="5" ry="5" width="45" height="25"
+	style="stroke:black;stroke-width:3;" />
+	<text class="smallText btn" id="txtPower" x="-15" y="72">Off</text>
 	
 	</g>
 </defs>
