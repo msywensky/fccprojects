@@ -13,6 +13,10 @@
 		font-size:20pt;
 	}
 	
+	.dark {
+		color:white;
+	}
+
 	h1 {
 		text-align:center;
 	}
@@ -29,10 +33,31 @@
 		background-image: url(//msywensky.github.io/fccprofile/img/weather/cloudy.jpg);
 	}
 	
+	.snowy {
+		background-image: url(//msywensky.github.io/fccprofile/img/weather/snowy.jpg);
+	}
+	
 	.clear {
 		background-image: url(//msywensky.github.io/fccprofile/img/weather/clear.jpg);
 	}
 	
+	.clear-night {
+		background-image: url(//msywensky.github.io/fccprofile/img/weather/clear-night.jpg);
+	}
+
+	.cloudy-night {
+		background-image: url(//msywensky.github.io/fccprofile/img/weather/cloudy-night.jpg);
+	}
+
+	.rainy-night {
+		background-image: url(//msywensky.github.io/fccprofile/img/weather/rainy-night.jpg);
+	}
+
+	.snowy-night {
+		background-image: url(//msywensky.github.io/fccprofile/img/weather/snowy-night.jpg);
+	}
+
+
 	#weatherIcon {
 		width:100px;
 		border:none;
@@ -53,12 +78,13 @@
 <body >
 	<h1>Current Weather</h1>
 	<div class="group">
-		<img id="weatherIcon" />
-		<div id="temp"></div>
+		<canvas id="icon1" width="128" height="128"></canvas>
 		<div id="weather"></div>
-		<div id="city"></div>
+		<div>Temp <span id="temp"></span></div>
+		<div>Feels like <span id="tempFeelsLike"></span></div>
 	</div>
-	<script src="weather.js"></script>			
+	<script src="//msywensky.github.io/fccprofile/js/skycons.js"></script>
+	<script src="weather.fcio.js"></script>			
 </body>	
 </html>
 	

@@ -41,7 +41,8 @@ function UpdateUI() {
 	$("#city").text(city + ", " + country);
 	$("#weather").text(weather);
 	$("#weatherIcon").attr("src",weathericon);
-	if (weatherdesc.contains("rain") ) {
+	console.log("desc: " + weatherdesc);
+	if (weatherdesc.contains("rain") || weatherdesc.contains("thunder") ) {
 		$("body").addClass("rainy");
 	} else if( weatherdesc.contains("cloud")) {
 		$("body").addClass("cloudy");
@@ -58,7 +59,7 @@ String.prototype.contains = function(str) {
 
 function getWeather() {
 	var key = "34b59da051c6ac1dba34c4dcbb657c8f";
-	var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat 
+	var url = "//api.openweathermap.org/data/2.5/weather?lat=" + lat 
 	+ "&lon=" + long + "&units=imperial&APPID=" + key;
 	console.log("url:",url);
 	$.getJSON(url)
@@ -68,7 +69,7 @@ function getWeather() {
 		temp = Math.round(data.main.temp);
 		weather = data.weather[0].main;
 		weatherdesc = data.weather[0].description;
-		weathericon = "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png";
+		weathericon = "//openweathermap.org/img/w/" + data.weather[0].icon + ".png";
 		UpdateUI();
 		console.log(JSON.stringify(data));
 	});
